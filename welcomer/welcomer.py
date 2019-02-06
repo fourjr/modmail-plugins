@@ -81,9 +81,9 @@ class Welcomer:
             async with self.bot.session.get(message) as resp:
                 message = await resp.text()
 
-        message = self.format_message(ctx.author, message, Box(default_box=True, default_box_attr='{invite not rendered}'))
+        formatted_message = self.format_message(ctx.author, message, Box(default_box=True, default_box_attr='{invite not rendered}'))
         if message:
-            await channel.send(**message)
+            await channel.send(**formatted_message)
             await self.db.find_one_and_update(
                 {'_id': 'config'},
                 {'$set': {'welcomer': {'channel': str(channel.id), 'message': message}}},
