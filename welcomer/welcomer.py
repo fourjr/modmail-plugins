@@ -1,9 +1,8 @@
 import json
-from collections import defaultdict
 
 import discord
 from discord.ext import commands
-
+from box import Box
 
 class Welcomer:
     def __init__(self, bot):
@@ -82,7 +81,7 @@ class Welcomer:
             async with self.bot.session.get(message) as resp:
                 message = await resp.text()
 
-        message = self.format_message(ctx.author, message, defaultdict(lambda: '{invite not rendered}'))
+        message = self.format_message(ctx.author, message, Box(default_box=True, default_box_attr='{invite not rendered}'))
         if message:
             await channel.send(**message)
             await self.db.find_one_and_update(
