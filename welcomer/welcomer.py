@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 import discord
 from discord.ext import commands
@@ -35,19 +36,12 @@ class Welcomer:
                         return new_invite
 
     def apply_vars(self, member, message, invite):
-        if invite is None:
-            return message.format(
-                member=member,
-                guild=member.guild,
-                bot=self.bot.user
-            )
-        else:
-            return message.format(
-                member=member,
-                guild=member.guild,
-                bot=self.bot.user,
-                invite=invite
-            )
+        return message.format(
+            member=member,
+            guild=member.guild,
+            bot=self.bot.user,
+            invite=invite
+        )
 
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
@@ -88,7 +82,7 @@ class Welcomer:
             async with self.bot.session.get(message) as resp:
                 message = await resp.text()
 
-        message = self.format_message(ctx.author, message, None)
+        message = self.format_message(ctx.author, message, defaultdict(lambda: '{invite not rendered}'))
         if message:
             await channel.send(**message)
             await self.db.find_one_and_update(
