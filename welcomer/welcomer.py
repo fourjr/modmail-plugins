@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from box import Box
 
+
 class Welcomer:
     def __init__(self, bot):
         self.bot = bot
@@ -82,7 +83,7 @@ class Welcomer:
                 message = await resp.text()
 
         formatted_message = self.format_message(ctx.author, message, Box(default_box=True, default_box_attr='{invite not rendered}'))
-        if message:
+        if formatted_message:
             await channel.send(**formatted_message)
             await self.db.find_one_and_update(
                 {'_id': 'config'},
