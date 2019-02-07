@@ -42,6 +42,8 @@ class Welcomer:
                 message[k] = self.apply_vars_dict(member, v, invite)
             elif isinstance(v, str):
                 message[k] = apply_vars(self, member, v, invite)
+            if k == 'timestamp':
+                message[k] = v[:-1]
         return message
 
     def format_message(self, member, message, invite):
