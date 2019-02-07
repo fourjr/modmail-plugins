@@ -14,7 +14,7 @@ class SafeString(str):
         try:
             super().__getattr__(name)
         except AttributeError:
-            return SafeString('{%s}.{%s}}' % (self[:-1], name))
+            return SafeString('%s.%s}' % (self[:-1], name))
 
 
 def apply_vars(self, member, message, invite):
