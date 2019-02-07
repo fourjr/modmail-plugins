@@ -40,7 +40,7 @@ class Welcomer:
         for k, v in message.items():
             if isinstance(v, dict):
                 message[k] = self.apply_vars_dict(member, v, invite)
-            else:
+            elif isinstance(v, str):
                 message[k] = apply_vars(self, member, v, invite)
         return message
 
