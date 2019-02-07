@@ -36,12 +36,17 @@ class Welcomer:
                         return new_invite
 
     def apply_vars(self, member, message, invite):
-        return message.format(
+        class format_dict(dict):
+            def __missing__(self, key):
+                return '{' + key + '}'
+
+        data = format_dict(
             member=member,
             guild=member.guild,
             bot=self.bot.user,
             invite=invite
         )
+        return message.format_map(**data)
 
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
@@ -74,7 +79,7 @@ class Welcomer:
         for complex usage.
         Example usage: `welcomer #general Hello {member.name}
         """
-        if message.startswith('http://'):
+        if message.startswith('https://') or message.startswith('http://'):
             # message is a URL
             if message.startswith('https://hasteb.in/'):
                 message = 'https://hasteb.in/raw/' + message.split('/')[-1]
