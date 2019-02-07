@@ -2,9 +2,8 @@ import json
 
 import discord
 from discord.ext import commands
-from box import Box
 
-from .models import apply_vars
+from .models import apply_vars, SafeString
 
 
 class Welcomer:
@@ -76,7 +75,7 @@ class Welcomer:
             async with self.bot.session.get(message) as resp:
                 message = await resp.text()
 
-        formatted_message = self.format_message(ctx.author, message, Box(default_box=True, default_box_attr='{invite not rendered}'))
+        formatted_message = self.format_message(ctx.author, message, SafeString('{invite}'))
         if formatted_message:
             await channel.send(**formatted_message)
             await self.db.find_one_and_update(

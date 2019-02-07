@@ -6,15 +6,15 @@ class SafeFormat(object):
         self.__dict = kw
 
     def __getitem__(self, name):
-        return self.__dict.get(name, SafeStr('{%s}' % name))
+        return self.__dict.get(name, SafeString('{%s}' % name))
 
 
-class SafeStr(str):
+class SafeString(str):
     def __getattr__(self, name):
         try:
             super().__getattr__(name)
         except AttributeError:
-            return SafeStr('{%s}.{%s}}' % (self[:-1], name))
+            return SafeString('{%s}.{%s}}' % (self[:-1], name))
 
 
 def apply_vars(self, member, message, invite):
