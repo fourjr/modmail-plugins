@@ -36,18 +36,21 @@ class Welcomer:
                         return new_invite
 
     def apply_vars(self, member, message, invite):
-        return message.format(
-            member=member,
-            guild=member.guild,
-            bot=self.bot.user,
-            invite=invite
-        )
+        try:
+            return message.format(
+                member=member,
+                guild=member.guild,
+                bot=self.bot.user,
+                invite=invite
+            )
+        except:
+            return message
 
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
             if isinstance(v, dict):
                 message[k] = self.apply_vars_dict(member, v, invite)
-            else:
+            elif isinstance(v, str):
                 message[k] = self.apply_vars(member, v, invite)
         return message
 
