@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from box import Box
 
+from .models import apply_vars
+
 
 class Welcomer:
     def __init__(self, bot):
@@ -35,25 +37,12 @@ class Welcomer:
                     if new_invite.uses > i.uses:
                         return new_invite
 
-    def apply_vars(self, member, message, invite):
-        class format_dict(dict):
-            def __missing__(self, key):
-                return '{' + key + '}'
-
-        data = format_dict(
-            member=member,
-            guild=member.guild,
-            bot=self.bot.user,
-            invite=invite
-        )
-        return message.format_map(data)
-
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
             if isinstance(v, dict):
                 message[k] = self.apply_vars_dict(member, v, invite)
             else:
-                message[k] = self.apply_vars(member, v, invite)
+                message[k] = apply_vars(self, member, v, invite)
         return message
 
     def format_message(self, member, message, invite):
@@ -61,7 +50,7 @@ class Welcomer:
             message = json.loads(message)
         except json.JSONDecodeError:
             # message is not embed
-            message = self.apply_vars(member, message, invite)
+            message = apply_vars(self, member, message, invite)
             message = {'content': message}
         else:
             # message is embed
