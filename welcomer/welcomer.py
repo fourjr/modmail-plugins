@@ -46,7 +46,7 @@ class Welcomer:
             bot=self.bot.user,
             invite=invite
         )
-        return message.format_map(**data)
+        return message.format_map(data)
 
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
