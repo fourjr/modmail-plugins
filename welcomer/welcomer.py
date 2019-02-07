@@ -1,6 +1,7 @@
 import json
 
 import discord
+from box import Box
 from discord.ext import commands
 
 from .models import apply_vars, SafeString
@@ -35,6 +36,7 @@ class Welcomer:
                 else:
                     if new_invite.uses > i.uses:
                         return new_invite
+        return Box(default_box=True, default_box_attr='{unable to get invite}')
 
     def apply_vars_dict(self, member, message, invite):
         for k, v in message.items():
