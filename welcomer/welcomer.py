@@ -8,7 +8,7 @@ from box import Box
 class Welcomer:
     def __init__(self, bot):
         self.bot = bot
-        # self.db = bot.plugin_db.get_partition(self)
+        self.db = bot.plugin_db.get_partition(self)
         self.invite_cache = {}
         bot.loop.create_task(self.populate_invite_cache())
 
