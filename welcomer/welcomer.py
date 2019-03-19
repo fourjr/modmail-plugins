@@ -65,6 +65,7 @@ class Welcomer:
                 message = None
         return message
 
+    @commands.has_permissions(manage_server=True)
     @commands.command()
     async def welcomer(self, ctx, channel: discord.TextChannel, *, message):
         """Sets up welcome command. Check [here](https://github.com/fourjr/modmail-plugins/blob/master/welcomer/README.md)
