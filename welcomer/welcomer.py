@@ -104,7 +104,7 @@ class Welcomer:
                 else:
                     await channel.send('Invalid welcome message')
             else:
-                print('Welcomer plugin not found: {getattr(channel, "name", None}')
+                print('Welcomer plugin not found: {getattr(channel, "id", None}')
 
 
 def setup(bot):
