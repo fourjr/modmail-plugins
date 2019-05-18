@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class UtilityExamples:
+class UtilityExamples(commands.Cog):
     """Provides basic utility commands"""
     def __init__(self, bot):
         self.bot = bot
