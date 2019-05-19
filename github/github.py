@@ -1,9 +1,12 @@
 import re
+from discord.ext import commands
 
 
-class Github:
+class Github(commands.Cog):
     """Checks for issue mentions in the message and responds to them.
     Made for the Modmail server."""
+
+    @commands.Cog.listener()
     async def on_message(self, message):
         match = re.match(r'modmail#(\d+)', message.content)
         if match:
