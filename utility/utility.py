@@ -13,12 +13,10 @@ class UtilityExamples(commands.Cog):
         """Repeats after you"""
         await ctx.send(message)
 
-    @commands.group()
+    @commands.group(name='group', invoke_without_command=True)
     async def group(self, ctx):
         """Allows user to set their group"""
-        if ctx.invoked_subcommand is None:
-            cmd = self.bot.get_command('help')
-            await ctx.invoke(cmd, command='group')
+        await ctx.send_help(ctx.command)
 
     @group.command(name='set')
     async def set_(self, ctx, group_name: str.title):
