@@ -13,7 +13,7 @@ class UtilityExamples(commands.Cog):
         """Repeats after you"""
         await ctx.send(message)
 
-    @commands.group(name='group', invoke_without_command=True)
+    @commands.group(invoke_without_command=True)
     async def group(self, ctx):
         """Allows user to set their group"""
         await ctx.send_help(ctx.command)
