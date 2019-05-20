@@ -13,12 +13,10 @@ class UtilityExamples(commands.Cog):
         """Repeats after you"""
         await ctx.send(message)
 
-    @commands.group()
+    @commands.group(invoke_without_command=True)
     async def group(self, ctx):
         """Allows user to set their group"""
-        if ctx.invoked_subcommand is None:
-            cmd = self.bot.get_command('help')
-            await ctx.invoke(cmd, command='group')
+        await ctx.send_help(ctx.command)
 
     @group.command(name='set')
     async def set_(self, ctx, group_name: str.title):
@@ -44,11 +42,11 @@ class UtilityExamples(commands.Cog):
         else:
             await ctx.send(f"{member.name} hasn't picked a group :(")
 
-    @commands.has_permissions(kick_member=True)
+    @commands.has_permissions(kick_members=True)
     @group.command()
     async def reset(self, ctx, member: discord.Member):
         """Resets a user's group
-        Only available for mods with kick_member permission"""
+        Only available for mods with kick_members permission"""
         await self.db.find_one_and_delete({'user_id': str(member.id)})
         await ctx.send('Member reset')
 
