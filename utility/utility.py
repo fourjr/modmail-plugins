@@ -42,11 +42,11 @@ class UtilityExamples(commands.Cog):
         else:
             await ctx.send(f"{member.name} hasn't picked a group :(")
 
-    @commands.has_permissions(kick_member=True)
+    @commands.has_permissions(kick_members=True)
     @group.command()
     async def reset(self, ctx, member: discord.Member):
         """Resets a user's group
-        Only available for mods with kick_member permission"""
+        Only available for mods with kick_members permission"""
         await self.db.find_one_and_delete({'user_id': str(member.id)})
         await ctx.send('Member reset')
 
