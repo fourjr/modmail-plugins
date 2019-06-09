@@ -60,7 +60,7 @@ class Welcomer(commands.Cog):
             message = self.apply_vars_dict(member, message, invite)
 
             if any(i in message for i in ('embed', 'content')):
-                message['embed'] = discord.Embed.from_data(message['embed'])
+                message['embed'] = discord.Embed.from_dict(message['embed'])
             else:
                 message = None
         return message
