@@ -44,7 +44,7 @@ class Welcomer(commands.Cog):
                 message[k] = self.apply_vars_dict(member, v, invite)
             elif isinstance(v, str):
                 message[k] = apply_vars(self, member, v, invite)
-            elif isisintance(v, list):
+            elif isinstance(v, list):
                 message[k] = [self.apply_vars_dict(member, _v, invite) for _v in v]
             if k == 'timestamp':
                 message[k] = v[:-1]
