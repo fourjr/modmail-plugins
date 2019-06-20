@@ -7,7 +7,7 @@ from discord.ext import commands
 from .models import apply_vars, SafeString
 
 
-class Welcomer:
+class Welcomer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.db = bot.plugin_db.get_partition(self)
@@ -44,6 +44,8 @@ class Welcomer:
                 message[k] = self.apply_vars_dict(member, v, invite)
             elif isinstance(v, str):
                 message[k] = apply_vars(self, member, v, invite)
+            elif isinstance(v, list):
+                message[k] = [self.apply_vars_dict(member, _v, invite) for _v in v]
             if k == 'timestamp':
                 message[k] = v[:-1]
         return message
@@ -60,18 +62,19 @@ class Welcomer:
             message = self.apply_vars_dict(member, message, invite)
 
             if any(i in message for i in ('embed', 'content')):
-                message['embed'] = discord.Embed.from_data(message['embed'])
+                message['embed'] = discord.Embed.from_dict(message['embed'])
             else:
                 message = None
         return message
 
-    @commands.has_permissions(manage_server=True)
+    @commands.has_permissions(manage_guild=True)
     @commands.command()
     async def welcomer(self, ctx, channel: discord.TextChannel, *, message):
         """Sets up welcome command. Check [here](https://github.com/fourjr/modmail-plugins/blob/master/welcomer/README.md)
         for complex usage.
-        Example usage: `welcomer #general Hello {member.name}
         """
+        # Example usage: `welcomer #general Hello {member.name}`
+        # """
         if message.startswith('https://') or message.startswith('http://'):
             # message is a URL
             if message.startswith('https://hasteb.in/'):
@@ -92,6 +95,7 @@ class Welcomer:
         else:
             await ctx.send('Invalid welcome message syntax.')
 
+    @commands.Cog.listener()
     async def on_member_join(self, member):
         invite = await self.get_used_invite(member.guild)
         config = (await self.db.find_one({'_id': 'config'}))['welcomer']
@@ -104,7 +108,7 @@ class Welcomer:
                 else:
                     await channel.send('Invalid welcome message')
             else:
-                print(f'Channel {channel.id} not found')
+                print('Welcomer plugin not found: {getattr(channel, "id", None}')
 
 
 def setup(bot):
