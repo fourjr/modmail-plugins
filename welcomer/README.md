@@ -1,5 +1,5 @@
 # Installation
-Run this command in Modmail: `plugin add fourjr/modmail-plugins/welcomer`
+Run this command in Modmail: `plugin add welcomer`
 
 # Permission needed to function
 `MANAGE_GUILD` (used to view invites)
