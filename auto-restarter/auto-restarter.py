@@ -48,7 +48,7 @@ class AutoRestarter(commands.Cog):
             await ctx.send('Invalid url. Refer to https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md')
         else:
             await self.db.find_one_and_update({'_id': 'autorestarter'}, {'$set': {'startup_url': url}})
-            await ctx.send('Changes saved. Remeber to set `HEROKU_APP_NAME` in the environment variables. Read <https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md>')
+            await ctx.send('Changes saved. Remember to set `HEROKU_APP_NAME` in the environment variables. Read <https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md>')
 
 
 def setup(bot):
