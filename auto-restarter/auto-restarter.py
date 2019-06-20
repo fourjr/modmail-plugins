@@ -8,8 +8,7 @@ logger = logging.getLogger("Modmail")
 logger.setLevel(logging.INFO)
 
 
-@commands.Cog()
-class AutoRestarter:
+class AutoRestarter(commands.Cog):
     """This plugin automatically starts another Heroku application
     when the first app dies.
 
