@@ -22,7 +22,7 @@ Read the [disclaimer](#disclaimer).
 4. Start the worker on `-1` but not `-2`.
 
 ## More info
-The full documentation of how this plugin works is on [fourjr/heroku-startup](https://github.com/fourjr/heroku-startup/README.md)
+The full documentation of how this plugin works is on [fourjr/heroku-startup](https://github.com/fourjr/heroku-startup/blob/master/README.md)
 
 ## Disclaimer
 I do not hold *any* responsibility if you get banned from Heroku. Choosing to add this to your Heroku experience is completely your own decision and I have no part to play in that. This is simply a tool for risk-takers who wish to risk that their account might be deleted to have fun.
