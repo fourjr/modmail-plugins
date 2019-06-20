@@ -32,7 +32,7 @@ class AutoRestarter:
         try:
             requests.get(f'https://{db_data["startup_url"]}/{mode}/{os.environ["HEROKU_APP_NAME"]}')
         except KeyError:
-            logger.warning(f'<autorestarter> APP_NAME is not set or HEROKU_APP_NAME is not set in environment variables. Unable to send {mode} payload.', exc_info=True)
+            logger.warning(f'<autorestarter> startup_url is not set or HEROKU_APP_NAME is not set in environment variables. Unable to send {mode} payload. Read https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md', exc_info=True)
         else:
             logger.info(f'<autorestarter> Successfully sent {mode} payload')
 
@@ -49,7 +49,7 @@ class AutoRestarter:
             await ctx.send('Invalid url. Refer to https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md')
         else:
             await self.db.find_one_and_update({'_id': 'autorestarter'}, {'$set': {'startup_url': url}})
-            await ctx.send('Changes saved. Remeber to set `HEROKU_APP_NAME` in the environment variables.')
+            await ctx.send('Changes saved. Remeber to set `HEROKU_APP_NAME` in the environment variables. Read <https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md>')
 
 
 def setup(bot):
