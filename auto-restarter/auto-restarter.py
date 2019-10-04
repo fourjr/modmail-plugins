@@ -29,7 +29,7 @@ class AutoRestarter(commands.Cog):
         db_data = await self.db.find_one({'_id': 'autorestarter'})
 
         try:
-            requests.get(f'https://{db_data["startup_url"]}/{mode}/{os.environ["HEROKU_APP_NAME"]}')
+            requests.get(f'{db_data["startup_url"]}/{mode}/{os.environ["HEROKU_APP_NAME"]}')
         except KeyError:
             logger.warning(f'<autorestarter> startup_url is not set or HEROKU_APP_NAME is not set in environment variables. Unable to send {mode} payload. Read https://github.com/fourjr/modmail-plugins/blob/master/auto-restarter/README.md', exc_info=True)
         else:
