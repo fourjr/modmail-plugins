@@ -24,7 +24,7 @@ class EmojiSuggestor(commands.Cog):
                     await asyncio.sleep(0.1)
                     await message.add_reaction(discord.utils.get(message.guild.emojis, name='xmark'))
             else:
-                await message.guild.get_channel(515085600047628288).send(f'{message.author.mention}, only images + captions are allowed. If you wish to add a caption, edit your original message.', delete_after=5)
+                await message.channel.send(f'{message.author.mention}, only images + captions are allowed. If you wish to add a caption, edit your original message.', delete_after=5)
                 await message.delete()
 
 
