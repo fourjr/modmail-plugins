@@ -39,7 +39,7 @@ class EmojiSuggestor(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         if payload.channel_id == self.channel_id:
-            message = await self.bot.get_channel(payload.channel_id).get_message(payload.message_id)
+            message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             for r in message.reactions:
                 if r.count > 1:
                     try:
@@ -50,7 +50,7 @@ class EmojiSuggestor(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
         if payload.channel_id == self.channel_id:
-            message = await self.bot.get_channel(payload.channel_id).get_message(payload.message_id)
+            message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             r_emojis = [r.emoji for r in message.reactions]
 
             for r in (discord.utils.get(message.guild.emojis, name='check'), discord.utils.get(message.guild.emojis, name='xmark')):
