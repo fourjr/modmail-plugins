@@ -8,8 +8,11 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id == 654622737159159829 and not message.author.bot:
-            if len(message.attachments):
+        if message.channel.id == 654622737159159829:
+            if message.author.bot:
+                await asyncio.sleep(5)
+                await message.delete()
+            elif len(message.attachments):
                 if len(message.attachments) > 1:
                     await message.channel.send(f'{message.author.mention}, send 1 emoji at a time.', delete_after=5)
                     await message.delete()
