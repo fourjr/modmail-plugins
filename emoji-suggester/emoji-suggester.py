@@ -72,7 +72,7 @@ class EmojiSuggestor(commands.Cog):
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @emojichannels.command()
-    async def channels(self, ctx, *, channels_: discord.Channel):
+    async def channels(self, ctx, *, channels_: discord.TextChannel):
         """Configure Emoji Channel(s)"""
         self.config = await self.bot.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'channel_ids': channels_}},
