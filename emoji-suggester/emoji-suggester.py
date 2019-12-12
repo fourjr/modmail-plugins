@@ -66,7 +66,7 @@ class EmojiSuggestor(commands.Cog):
                     await message.add_reaction(discord.utils.get(message.guild.emojis, id=r))
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @commands.group()
+    @commands.group(invoke_without_command=True)
     async def emojichannels(self, ctx):
         """Configure Emoji Suggestor Channel"""
         await ctx.send_help(ctx.command)
