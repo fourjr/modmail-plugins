@@ -10,7 +10,7 @@ class EmojiSuggestor(commands.Cog):
     async def on_message(self, message):
         if message.channel.id == 654622737159159829:
             if message.author.bot:
-                await asyncio.sleep(5)
+                await asyncio.sleep(6)
                 try:
                     await message.delete()
                 except discord.NotFound:
