@@ -28,7 +28,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id in self.config.get('channel_ids', []):
+        if self.config.get('status', True) and message.channel.id in self.config.get('channel_ids', []):
             if message.author.bot:
                 await asyncio.sleep(5)
                 await self.delete(message, warning=None)
@@ -46,7 +46,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        if payload.channel_id in self.config.get('channel_ids', []):
+        if self.config.get('status', True) and payload.channel_id in self.config.get('channel_ids', []):
             message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             for r in message.reactions:
                 if r.count > 1:
@@ -57,7 +57,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        if payload.channel_id in self.config.get('channel_ids', []):
+        if self.config.get('status', True) and payload.channel_id in self.config.get('channel_ids', []):
             message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             r_emojis = [r.emoji.id for r in message.reactions]
 
@@ -88,6 +88,18 @@ class EmojiSuggestor(commands.Cog):
         """Configure Emojis used during voting"""
         self.config = await self.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'emojis': [i.id for i in emojis]}},
+            return_document=ReturnDocument.AFTER,
+            upsert=True
+        )
+        await ctx.send('Config set.')
+
+        
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @emojichannels.command()
+    async def toggle(self, ctx):
+        """Toggles status of the plugin"""
+        self.config = await self.db.find_one_and_update(
+            {'_id': 'config'}, {'$set': {'status': not self.config.get('status', True)}},
             return_document=ReturnDocument.AFTER,
             upsert=True
         )
