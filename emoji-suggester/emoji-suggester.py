@@ -66,7 +66,7 @@ class EmojiSuggestor(commands.Cog):
                     await message.add_reaction(discord.utils.get(message.guild.emojis, id=r))
 
     @commands.group()
-    async def emojichannels(self, ctx);
+    async def emojichannels(self, ctx):
         await ctx.send_help(ctx.command)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
