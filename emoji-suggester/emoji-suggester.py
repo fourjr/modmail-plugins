@@ -7,7 +7,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id == 654622737159159829 
+        if message.channel.id == 654622737159159829:
             if len(message.attachments):
                 await message.add_reaction(discord.utils.get(message.guild.emojis, name='check')
                 await asyncio.sleep(0.1)
