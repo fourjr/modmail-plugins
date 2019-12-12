@@ -16,7 +16,7 @@ class EmojiSuggestor(commands.Cog):
         bot.loop.create_task(self.load_variables())
 
     async def load_variables(self):
-        self.config = await self.db.find_one({'_id': 'config'})
+        self.config = await self.db.find_one({'_id': 'config'}) or {}
 
     async def delete(self, message, warning):
         if warning:
@@ -77,7 +77,8 @@ class EmojiSuggestor(commands.Cog):
         """Configure Emoji Channel(s)"""
         self.config = await self.bot.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'channel_ids': channels_}},
-            return_document=ReturnDocument.AFTER
+            return_document=ReturnDocument.AFTER,
+            upsert=True
         )
         await ctx.send('Config set.')
 
@@ -87,7 +88,8 @@ class EmojiSuggestor(commands.Cog):
         """Configure Emojis used during voting"""
         self.config = await self.bot.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'emojis': [i.id for i in emojis]}},
-            return_document=ReturnDocument.AFTER
+            return_document=ReturnDocument.AFTER,
+            upsert=True
         )
         await ctx.send('Config set.')
 
