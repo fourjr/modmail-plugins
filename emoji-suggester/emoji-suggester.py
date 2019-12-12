@@ -10,9 +10,16 @@ class EmojiSuggestor(commands.Cog):
     async def on_message(self, message):
         if message.channel.id == 654622737159159829:
             if len(message.attachments):
-                await message.add_reaction(discord.utils.get(message.guild.emojis, name='check'))
-                await asyncio.sleep(0.1)
-                await message.add_reaction(discord.utils.get(message.guild.emojis, name='xmark'))
+                if len(message.attachments) > 1:
+                    await message.delete()
+                    await message.guild.get_channel(515085600047628288).send(f'{message.author.mention}, send 1 emoji at a time in {message.channel.mention}')
+                elif not message.atttachments[0].filename.endswith('.png'):
+                    await message.delete()
+                    await message.guild.get_channel(515085600047628288).send(f'{message.author.mention}, only png attachments are allowed in {message.channel.mention}')
+                else:
+                    await message.add_reaction(discord.utils.get(message.guild.emojis, name='check'))
+                    await asyncio.sleep(0.1)
+                    await message.add_reaction(discord.utils.get(message.guild.emojis, name='xmark'))
             else:
                 await message.delete()
                 await message.guild.get_channel(515085600047628288).send(f'{message.author.mention}, do not send messages in {message.channel.mention}')
