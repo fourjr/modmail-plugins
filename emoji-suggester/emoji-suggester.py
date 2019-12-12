@@ -15,6 +15,7 @@ class EmojiSuggestor(commands.Cog):
                 await message.add_reaction(discord.utils.get(message.guild.emojis, name='xmark'))
             else:
                 await message.delete()
+                await message.guild.get_channel(515085600047628288).send(f'{message.author.mention}, do not send messages in {message.channel.mention}')
 
 
 def setup(bot):
