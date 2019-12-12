@@ -103,7 +103,7 @@ class EmojiSuggestor(commands.Cog):
             return_document=ReturnDocument.AFTER,
             upsert=True
         )
-        await ctx.send('Config set.')
+        await ctx.send(f'Config set: Status {self.config.get("status", True)}.')
 
 
 def setup(bot):
