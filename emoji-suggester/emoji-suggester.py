@@ -75,7 +75,7 @@ class EmojiSuggestor(commands.Cog):
     @emojichannels.command()
     async def channels(self, ctx, *, channels_: discord.TextChannel):
         """Configure Emoji Channel(s)"""
-        self.config = await self.bot.db.find_one_and_update(
+        self.config = await self.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'channel_ids': channels_}},
             return_document=ReturnDocument.AFTER,
             upsert=True
@@ -86,7 +86,7 @@ class EmojiSuggestor(commands.Cog):
     @emojichannels.command()
     async def emojis(self, ctx, *, emojis: discord.Emoji):
         """Configure Emojis used during voting"""
-        self.config = await self.bot.db.find_one_and_update(
+        self.config = await self.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'emojis': [i.id for i in emojis]}},
             return_document=ReturnDocument.AFTER,
             upsert=True
