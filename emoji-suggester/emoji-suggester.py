@@ -67,11 +67,13 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.group()
     async def emojichannels(self, ctx):
+        """Configure Emoji Suggestor Channel"""
         await ctx.send_help(ctx.command)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @emojischannels.command()
+    @emojichannels.command()
     async def channels(self, ctx, *, channels_: discord.Channel):
+        """Configure Emoji Channel(s)"""
         self.config = await self.bot.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'channel_ids': channels_}},
             return_document=ReturnDocument.AFTER
@@ -79,8 +81,9 @@ class EmojiSuggestor(commands.Cog):
         await ctx.send('Config set.')
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @emojischannels.command()
+    @emojichannels.command()
     async def emojis(self, ctx, *, emojis: discord.Emoji):
+        """Configure Emojis used during voting"""
         self.config = await self.bot.db.find_one_and_update(
             {'_id': 'config'}, {'$set': {'emojis': [i.id for i in emojis]}},
             return_document=ReturnDocument.AFTER
