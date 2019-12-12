@@ -13,7 +13,7 @@ class EmojiSuggestor(commands.Cog):
                 if len(message.attachments) > 1:
                     await message.channel.send(f'{message.author.mention}, send 1 emoji at a time.', delete_after=5)
                     await message.delete()
-                elif not message.atttachments[0].filename.endswith('.png'):
+                elif not message.attachments[0].filename.endswith('.png'):
                     await message.channel.send(f'{message.author.mention}, only png attachments are allowed.', delete_after=5)
                     await message.delete()
                 else:
