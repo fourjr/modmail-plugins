@@ -16,6 +16,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        return # disable
         if message.channel.id == 654622737159159829:
             if message.author.bot:
                 await asyncio.sleep(5)
@@ -23,8 +24,8 @@ class EmojiSuggestor(commands.Cog):
             elif len(message.attachments):
                 if len(message.attachments) > 1:
                     await self.delete(message, warning=f'{message.author.mention}, send 1 emoji at a time.')
-                elif not message.attachments[0].filename.endswith('.png'):
-                    await self.delete(message, warning=f'{message.author.mention}, only png attachments are allowed.')
+                elif not message.attachments[0].filename.endswith('.png') || message.attachments[0].filename.endswith('.gif'):
+                    await self.delete(message, warning=f'{message.author.mention}, only png or gif attachments are allowed.')
                 else:
                     await message.add_reaction(discord.utils.get(message.guild.emojis, name='check'))
                     await asyncio.sleep(0.1)
