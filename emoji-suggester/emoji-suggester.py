@@ -1,6 +1,10 @@
 import asyncio
 import discord
 from discord.ext import commands
+from pymongo import ReturnDocument
+
+from core import checks
+from core.models import PermissionLevel
 
 
 class EmojiSuggestor(commands.Cog):
@@ -8,7 +12,11 @@ class EmojiSuggestor(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.channel_id = 654622737159159829
+        self.db = bot.plugin_db.get_partition(self)
+        bot.loop.create_task(self.load_variables())
+
+    async def load_variables(self):
+        self.config = await self.db.find_one({'_id': 'config'})
 
     async def delete(self, message, warning):
         if warning:
@@ -20,7 +28,7 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.channel.id == self.channel_id:
+        if message.channel.id in self.config.get('channel_ids', []):
             if message.author.bot:
                 await asyncio.sleep(5)
                 await self.delete(message, warning=None)
@@ -30,15 +38,15 @@ class EmojiSuggestor(commands.Cog):
                 elif not (message.attachments[0].filename.endswith('.png') or message.attachments[0].filename.endswith('.gif')):
                     await self.delete(message, warning=f'{message.author.mention}, only png or gif attachments are allowed.')
                 else:
-                    await message.add_reaction(discord.utils.get(message.guild.emojis, name='check'))
-                    await asyncio.sleep(0.1)
-                    await message.add_reaction(discord.utils.get(message.guild.emojis, name='xmark'))
+                    for r in self.config['emojis']:
+                        await message.add_reaction(discord.utils.get(message.guild.emojis, id=r))
+                        await asyncio.sleep(0.1)
             else:
                 await self.delete(message, warning=f'{message.author.mention}, only images + captions are allowed. If you wish to add a caption, edit your original message.')
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        if payload.channel_id == self.channel_id:
+        if payload.channel_id in self.config.get('channel_ids', []):
             message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
             for r in message.reactions:
                 if r.count > 1:
@@ -49,13 +57,35 @@ class EmojiSuggestor(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        if payload.channel_id == self.channel_id:
+        if payload.channel_id in self.config.get('channel_ids', []):
             message = await self.bot.get_channel(payload.channel_id).fetch_message(payload.message_id)
-            r_emojis = [r.emoji for r in message.reactions]
+            r_emojis = [r.emoji.id for r in message.reactions]
 
-            for r in (discord.utils.get(message.guild.emojis, name='check'), discord.utils.get(message.guild.emojis, name='xmark')):
+            for r in self.config['emojis']:
                 if r not in r_emojis:
-                    await message.add_reaction(r)
+                    await message.add_reaction(discord.utils.get(message.guild.emojis, id=r))
+
+    @commands.group()
+    async def emojichannels(self, ctx);
+        await ctx.send_help(ctx.command)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @emojischannels.command()
+    async def channels(self, ctx, *, channels_: discord.Channel):
+        self.config = await self.bot.db.find_one_and_update(
+            {'_id': 'config'}, {'$set': {'channel_ids': channels_}},
+            return_document=ReturnDocument.AFTER
+        )
+        await ctx.send('Config set.')
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @emojischannels.command()
+    async def emojis(self, ctx, *, emojis: discord.Emoji):
+        self.config = await self.bot.db.find_one_and_update(
+            {'_id': 'config'}, {'$set': {'emojis': [i.id for i in emojis]}},
+            return_document=ReturnDocument.AFTER
+        )
+        await ctx.send('Config set.')
 
 
 def setup(bot):
