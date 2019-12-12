@@ -65,6 +65,7 @@ class EmojiSuggestor(commands.Cog):
                 if r not in r_emojis:
                     await message.add_reaction(discord.utils.get(message.guild.emojis, id=r))
 
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @commands.group()
     async def emojichannels(self, ctx):
         """Configure Emoji Suggestor Channel"""
