@@ -4,6 +4,8 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+from core import checks
+from core.models import PermissionLevel
 from core.time import UserFriendlyTime
 
 
@@ -12,6 +14,7 @@ class TopSupporters(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @commands.command()
     async def topsupporters(self, ctx, *, dt: UserFriendlyTime):
         """Retrieves top supporters for the specified time period"""
