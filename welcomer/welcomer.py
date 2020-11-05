@@ -81,7 +81,7 @@ class Welcomer(commands.Cog):
                 message = 'https://hasteb.in/raw/' + message.split('/')[-1]
 
             async with self.bot.session.get(message) as resp:
-                message = await resp.text()
+                message = await resp.text(encoding='utf8')
 
         formatted_message = self.format_message(ctx.author, message, SafeString('{invite}'))
         if formatted_message:
