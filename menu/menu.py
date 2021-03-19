@@ -69,18 +69,18 @@ class Menu(commands.Cog):
 
         try:
             await ctx.send('What is the menu message?')
-            m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=30)
+            m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=300)
             config['content'] = m.content
             
             await ctx.send('How many options are available?')
-            m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author and x.content.isdigit(), timeout=30)
+            m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author and x.content.isdigit(), timeout=300)
             options_len = int(m.content)
             config['options'] = {}
 
             for _ in range(options_len):
                 await ctx.send('What is the option emoji?')
                 while True:
-                    m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=30)
+                    m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=300)
                     try:
                         await m.add_reaction(m.content)
                     except discord.HTTPException:
@@ -90,7 +90,7 @@ class Menu(commands.Cog):
                         break
 
                 await ctx.send('What is the option command? (e.g. `reply Transferring && move 1238343847384`)')
-                m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=30)
+                m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=300)
                 config['options'][emoji] = m.content
         except asyncio.TimeoutError:
             await ctx.send('Timeout. Re-run the command to create a menu.')
