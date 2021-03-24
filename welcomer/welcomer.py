@@ -77,8 +77,8 @@ class Welcomer(commands.Cog):
         # """
         if message.startswith('https://') or message.startswith('http://'):
             # message is a URL
-            if message.startswith('https://hasteb.in/'):
-                message = 'https://hasteb.in/raw/' + message.split('/')[-1]
+            if message.startswith('https://hastebin.cc/'):
+                message = 'https://hastebin.cc/raw/' + message.split('/')[-1]
 
             async with self.bot.session.get(message) as resp:
                 message = await resp.text(encoding='utf8')
