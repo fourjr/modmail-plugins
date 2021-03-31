@@ -19,9 +19,14 @@ class MediaLogger(commands.Cog):
         if channel_id:
             return self.bot.get_channel(int(channel_id))
 
+    async def is_ignored(self, channel):
+        config = await self.db.find_one({'_id': 'config'}) or {}
+        ignored = config.get('ignored_channels', [])
+        return str(channel.id) in ignored
+
     @commands.Cog.listener()
     async def on_message(self, m):
-        if m.author.bot: return
+        if m.author.bot or await self.is_ignored(m.channel): return
 
         em = discord.Embed(
             description=f'[Jump to Message]({m.jump_url})',
@@ -41,8 +46,18 @@ class MediaLogger(commands.Cog):
     @commands.command()
     async def setmedialogchannel(self, ctx, channel: discord.TextChannel):
         """Sets the media log channel"""
-        await self.db.find_one_and_update({'_id': 'config'}, {'$set': {'log_channel': str(channel.id)}}, upsert=True)
-        await ctx.send('Successs')
+        await self.db.find_one_and_update({'_id': 'config'}, {'$set': {'log_channel': str(channel.id), 'ignored_channels': []}}, upsert=True)
+        await ctx.send('Success')
+
+    @checks.has_permissions(PermissionLevel.MODERATOR)
+    @commands.command()
+    async def medialogignore(self, ctx, channel: discord.TextChannel):
+        """Sets the media log channel"""
+        if await self.is_ignored(channel):
+            await self.db.find_one_and_update({'_id': 'config'}, {'$pull': {'ignored_channels': str(channel.id)}}, upsert=True)
+        else:
+            await self.db.find_one_and_update({'_id': 'config'}, {'$addToSet': {'ignored_channels': str(channel.id)}}, upsert=True)
+        await ctx.send('Success')
 
 
 def setup(bot):
