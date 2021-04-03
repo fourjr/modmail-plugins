@@ -7,7 +7,7 @@ from core.checks import PermissionLevel
 
 
 class ClaimThread(commands.Cog):
-    """Allows supporters to claim thread by sendning claim in the thread channel"""
+    """Allows supporters to claim thread by sending claim in the thread channel"""
     def __init__(self, bot):
         self.bot = bot
         self.db = self.bot.plugin_db.get_partition(self)
