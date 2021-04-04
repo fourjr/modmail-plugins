@@ -29,7 +29,7 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @checks.thread_only()
     @commands.command()
-    async def add(self, ctx, *, member: discord.Member):
+    async def addclaim(self, ctx, *, member: discord.Member):
         """Adds another user to the thread claimers"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
@@ -39,7 +39,7 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @checks.thread_only()
     @commands.command()
-    async def remove(self, ctx, *, member: discord.Member):
+    async def removeclaim(self, ctx, *, member: discord.Member):
         """Removes a user from the thread claimers"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
@@ -49,7 +49,7 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @checks.thread_only()
     @commands.command()
-    async def transfer(self, ctx, *, member: discord.Member):
+    async def transferclaim(self, ctx, *, member: discord.Member):
         """Removes all users from claimers and gives another member all control over thread"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread and str(ctx.author.id) in thread['claimers']:
@@ -59,7 +59,7 @@ class ClaimThread(commands.Cog):
     @checks.has_permissions(PermissionLevel.MODERATOR)
     @checks.thread_only()
     @commands.command()
-    async def overrideadd(self, ctx, *, member: discord.Member):
+    async def overrideaddclaim(self, ctx, *, member: discord.Member):
         """Allow mods to bypass claim thread check in add"""
         thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
         if thread:
