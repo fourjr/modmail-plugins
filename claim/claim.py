@@ -14,17 +14,16 @@ class ClaimThread(commands.Cog):
         check_reply.fail_msg = 'This thread has been claimed by another user.'
         self.bot.get_command('reply').add_check(check_reply)
 
-    @commands.Cog.listener()
-    async def on_message(self, m):
-        if m.content == 'claim':
-            thread = await self.bot.threads.find(channel=m.channel)
-            if thread:
-                t = await self.db.find_one({'thread_id': str(thread.channel.id)})
-                if t is None:
-                    await self.db.insert_one({'thread_id': str(thread.channel.id), 'claimers': [str(m.author.id)]})
-                    await m.channel.send('Claimed')
-                else:
-                    await m.channel.send('Thread is already claimed')
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
+    @checks.thread_only()
+    @commands.command()
+    async def claim(self, ctx):
+        thread = await self.db.find_one({'thread_id': str(ctx.thread.channel.id)})
+        if thread is None:
+            await self.db.insert_one({'thread_id': str(ctx.thread.channel.id), 'claimers': [str(ctx.author.id)]})
+            await ctx.send('Claimed')
+        else:
+            await ctx.send('Thread is already claimed')
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @checks.thread_only()
