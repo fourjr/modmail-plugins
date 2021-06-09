@@ -33,15 +33,14 @@ class Questions(commands.Cog):
             q_message.content = question
             await thread.reply(q_message)
 
-            while True:
-                try:
-                    m = await self.user_resp(thread.recipient, thread.recipient, timeout=30)
-                except asyncio.TimeoutError:
-                    await thread.close(closer=self.bot.modmail_guild.me, message='Closed due to inactivity and not responding to questions')
-                    return
-                else:
-                    responses[question] = m.content
-                    break
+            try:
+                m = await self.user_resp(thread.recipient, thread.recipient, timeout=30)
+            except asyncio.TimeoutError:
+                await thread.close(closer=self.bot.modmail_guild.me, message='Closed due to inactivity and not responding to questions')
+                return
+            else:
+                responses[question] = m.content
+                break
 
         await asyncio.sleep(1)
         em = discord.Embed(color=self.bot.main_color, timestamp=datetime.utcnow())
