@@ -40,7 +40,6 @@ class Questions(commands.Cog):
                 return
             else:
                 responses[question] = m.content
-                break
 
         await asyncio.sleep(1)
         em = discord.Embed(color=self.bot.main_color, timestamp=datetime.utcnow())
@@ -51,7 +50,7 @@ class Questions(commands.Cog):
         await message.pin()
 
         q_message.content = 'Your thread is now passed over to the moderators.'
-        await thread.repy(q_message)
+        await thread.reply(q_message)
 
         move_to = self.bot.get_channel(int(config['move_to']))
         await thread.channel.edit(category=move_to, sync_permissions=True)
