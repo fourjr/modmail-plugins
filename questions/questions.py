@@ -40,7 +40,6 @@ class Questions(commands.Cog):
                 return
             else:
                 responses[question] = m.content
-                break
 
         await asyncio.sleep(1)
         em = discord.Embed(color=self.bot.main_color, timestamp=datetime.utcnow())
