@@ -1,9 +1,11 @@
+import base64
 import glob
 import os
 import tempfile
 import typing
 import zipfile
 
+import aiohttp
 import discord
 from discord.ext import commands
 
@@ -16,6 +18,22 @@ class EmoteManager(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    async def compress_image(self, url):
+        auth = aiohttp.BasicAuth("api", os.environ["TINIFY_APIKEY"])
+        async with self.bot.session.post(
+            'https://api.tinify.com/shrink',
+            auth=auth,
+            json={"source": {"url": url}}
+        ) as resp:
+            if resp.status == 201:
+                response_data = await resp.json()
+                output_url = response_data['output']['url']
+            else:
+                raise commands.BadArgument('Unable to compress image, try to upload an image < 256kb')
+
+        async with self.bot.session.get(output_url) as resp:
+            return await resp.read()
 
     @commands.group(invoke_without_command=True)
     @checks.has_permissions(PermissionLevel.MODERATOR)
@@ -56,6 +74,15 @@ class EmoteManager(commands.Cog):
 
         async with self.bot.session.get(link) as resp:
             data = await resp.read()
+
+        kb = len(data) / 1000
+        if kb > 256:
+            data = await self.compress_image(link)
+
+        kb = len(data) / 1000
+        if kb > 256:
+            # if still more than 256
+            raise commands.BadArgument('Unable to compress image, try to upload an image < 256kb')
 
         await ctx.guild.create_custom_emoji(name=name, image=data)
         await ctx.send("Emoji added.")
