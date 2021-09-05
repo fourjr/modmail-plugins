@@ -1,7 +1,6 @@
 import asyncio
 import copy
 
-import dateutil
 import discord
 from discord.ext import commands
 from discord.ext.commands.view import StringView
@@ -25,13 +24,20 @@ class Menu(commands.Cog):
             message = DummyMessage(copy.copy(initial_message))
             message.author = self.bot.modmail_guild.me
             message.content = menu_config['content']
-            msg, _ = await thread.reply(message)
+            msgs, _ = await thread.reply(message)
+            main_recipient_msg = None
+
+            for m in msgs:
+                if m.channel.recipient == thread.recipient:
+                    main_recipient_msg = m
+                    break
+
             for r in menu_config['options']:
-                await msg.add_reaction(r)
+                await main_recipient_msg.add_reaction(r)
                 await asyncio.sleep(0.3)
 
             try:
-                reaction, _ = await self.bot.wait_for('reaction_add', check=lambda r, u: r.message == msg and u == thread.recipient and str(r.emoji) in menu_config['options'], timeout=120)
+                reaction, _ = await self.bot.wait_for('reaction_add', check=lambda r, u: r.message == main_recipient_msg and u == thread.recipient and str(r.emoji) in menu_config['options'], timeout=120)
             except asyncio.TimeoutError:
                 message.content = 'No reaction received in menu... timing out'
                 await thread.reply(message)
@@ -71,7 +77,7 @@ class Menu(commands.Cog):
             await ctx.send('What is the menu message?')
             m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author, timeout=300)
             config['content'] = m.content
-            
+
             await ctx.send('How many options are available?')
             m = await self.bot.wait_for('message', check=lambda x: ctx.message.channel == x.channel and ctx.message.author == x.author and x.content.isdigit(), timeout=300)
             options_len = int(m.content)
