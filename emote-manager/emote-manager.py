@@ -162,5 +162,5 @@ class EmoteManager(commands.Cog):
             await ctx.send("Emojis added")
 
 
-def setup(bot):
-    bot.add_cog(EmoteManager(bot))
+async def setup(bot):
+    await bot.add_cog(EmoteManager(bot))

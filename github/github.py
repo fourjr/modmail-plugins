@@ -14,5 +14,5 @@ class Github(commands.Cog):
             await message.channel.send(f'https://github.com/kyb3r/modmail/issues/{issue_num}')
 
 
-def setup(bot):
-    bot.add_cog(Github())
+async def setup(bot):
+    await bot.add_cog(Github())

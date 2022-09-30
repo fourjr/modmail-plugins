@@ -51,5 +51,5 @@ class UtilityExamples(commands.Cog):
         await ctx.send('Member reset')
 
 
-def setup(bot):
-    bot.add_cog(UtilityExamples(bot))
+async def setup(bot):
+    await bot.add_cog(UtilityExamples(bot))

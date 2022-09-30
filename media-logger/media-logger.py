@@ -33,7 +33,7 @@ class MediaLogger(commands.Cog):
             color=self.bot.main_color,
             timestamp=datetime.utcnow()
         )
-        em.set_author(name=m.author.name, icon_url=m.author.avatar_url)
+        em.set_author(name=m.author.name, icon_url=m.author.display_avatar)
         em.set_footer(text=f'U: {m.author.id} | C: {m.channel.id} | M: {m.id}')
         for a in m.attachments:
             if a.filename.endswith('.png') or a.filename.endswith('.jpeg') or a.filename.endswith('.gif') or a.filename.endswith('.jpg'):
@@ -60,5 +60,5 @@ class MediaLogger(commands.Cog):
         await ctx.send('Success')
 
 
-def setup(bot):
-    bot.add_cog(MediaLogger(bot))
+async def setup(bot):
+    await bot.add_cog(MediaLogger(bot))
