@@ -51,7 +51,7 @@ class Countdowns(commands.Cog):
             await ctx.send('Countdown already created')
             return
 
-        if time.dt <= datetime.now(timezone.utc):
+        if time.dt <= discord.utils.utcnow():
             raise commands.BadArgument('Invalid time provided')
         if not time.arg:
             raise commands.BadArgument('Invalid name provided')
@@ -124,7 +124,7 @@ class Countdowns(commands.Cog):
                 return
 
     async def update(self, name, date, channel):
-        seconds = round((date - datetime.now(timezone.utc)).total_seconds())
+        seconds = round((date - discord.utils.utcnow()).total_seconds())
         if seconds < 0:
             await channel.edit(name=name)
             logger.info('Countdown %s has ended, removing countdown', name)
