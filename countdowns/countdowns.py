@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.ext import commands
@@ -35,7 +35,7 @@ class Countdowns(commands.Cog):
             })
 
             await self.db.find_one_and_update({'_id': 'config'}, {'$set': {'category': str(category.id)}}, upsert=True)
-        
+
         return category
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
@@ -51,7 +51,7 @@ class Countdowns(commands.Cog):
             await ctx.send('Countdown already created')
             return
 
-        if time.dt <= datetime.utcnow():
+        if time.dt <= discord.utils.utcnow():
             raise commands.BadArgument('Invalid time provided')
         if not time.arg:
             raise commands.BadArgument('Invalid name provided')
@@ -124,7 +124,7 @@ class Countdowns(commands.Cog):
                 return
 
     async def update(self, name, date, channel):
-        seconds = round((date - datetime.utcnow()).total_seconds())
+        seconds = round((date - discord.utils.utcnow()).total_seconds())
         if seconds < 0:
             await channel.edit(name=name)
             logger.info('Countdown %s has ended, removing countdown', name)
@@ -157,12 +157,16 @@ class Countdowns(commands.Cog):
             await channel.edit(name=f"{name}: {hours} hours")
             await asyncio.sleep(timedelta(hours=1).total_seconds())
 
-        elif minutes > 1:
+        elif minutes >= 1:
             minutes += months * 30 + days * 24 + hours * 60 + seconds / 60
             minutes = round(minutes)
 
-            await channel.edit(name=f"{name}: {minutes} minutes")
-            await asyncio.sleep(60)
+            if minutes == 1:
+                await channel.edit(name=f"{name}: {minutes} minute")
+                await asyncio.sleep(60)
+            else:
+                await channel.edit(name=f"{name}: {minutes} minutes")
+                await asyncio.sleep(60)
 
         elif seconds:
             seconds += months * 30 + days * 24 + hours * 60 + minutes * 60
@@ -175,9 +179,10 @@ class Countdowns(commands.Cog):
             await channel.edit(name=f"{name}")
             logger.info('Countdown %s has ended, removing countdown', name)
             return False
-        
+
         logger.info('Updated countdown %s', name)
         return True
 
-def setup(bot):
-    bot.add_cog(Countdowns(bot))
+
+async def setup(bot):
+    await bot.add_cog(Countdowns(bot))

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from types import SimpleNamespace
 
 import discord
@@ -43,9 +43,9 @@ class Report(commands.Cog):
             ellipsis = '...' if len(message.content) > 200 else ''
             description = f'{message.content[:200]}{ellipsis}\n[Read More]({message.jump_url})'
 
-            em = discord.Embed(title='New Report', description=description, color=discord.Colour.red(), timestamp=datetime.utcnow())
-            em.set_author(name=str(message.author), icon_url=message.author.avatar_url)
-            em.set_footer(text=f'Reported by {author}', icon_url=author.avatar_url)
+            em = discord.Embed(title='New Report', description=description, color=discord.Colour.red(), timestamp=discord.utils.utcnow())
+            em.set_author(name=str(message.author), icon_url=message.author.display_avatar)
+            em.set_footer(text=f'Reported by {author}', icon_url=author.display_avatar)
             await config.channel.send(embed=em)
             await author.send(embed=em)
 
@@ -60,5 +60,5 @@ class Report(commands.Cog):
         await ctx.send('Configured')
 
 
-def setup(bot):
-    bot.add_cog(Report(bot))
+async def setup(bot):
+    await bot.add_cog(Report(bot))

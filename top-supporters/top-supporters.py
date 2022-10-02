@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 import discord
 from discord.ext import commands
@@ -19,7 +19,7 @@ class TopSupporters(commands.Cog):
     async def topsupporters(self, ctx, *, dt: UserFriendlyTime):
         """Retrieves top supporters for the specified time period"""
         async with ctx.typing():
-            date = datetime.utcnow() - (dt.dt - datetime.utcnow())
+            date = discord.utils.utcnow() - (dt.dt - discord.utils.utcnow())
 
             logs = await self.bot.api.logs.find({"open": False}).to_list(None)
             logs = filter(lambda x: isinstance(x['closed_at'], str) and datetime.fromisoformat(x['closed_at']) > date, logs)
@@ -50,5 +50,5 @@ class TopSupporters(commands.Cog):
             await ctx.send(embed=em)
 
 
-def setup(bot):
-    bot.add_cog(TopSupporters(bot))
+async def setup(bot):
+    await bot.add_cog(TopSupporters(bot))

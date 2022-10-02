@@ -83,5 +83,5 @@ async def check_reply(ctx):
     return True
 
 
-def setup(bot):
-    bot.add_cog(ClaimThread(bot))
+async def setup(bot):
+    await bot.add_cog(ClaimThread(bot))

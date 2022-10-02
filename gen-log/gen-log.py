@@ -68,5 +68,5 @@ class GenLog(commands.Cog):
         return out
 
 
-def setup(bot):
-    bot.add_cog(GenLog(bot))
+async def setup(bot):
+    await bot.add_cog(GenLog(bot))
