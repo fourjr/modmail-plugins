@@ -25,14 +25,25 @@ class GenLog(commands.Cog):
         out = f"Thread created at {thread_create_time}\n"
 
         if thread['creator']['id'] == thread['recipient']['id'] and thread['creator']['mod'] == thread['recipient']['mod']:
-            out += f"[R] {thread['creator']['name']}#{thread['creator']['discriminator']} "
+            out += f"[R] {thread['creator']['name']} "
             out += f"({thread['creator']['id']}) created a Modmail thread. \n"
         else:
-            out += f"[M] {thread['creator']['name']}#{thread['creator']['discriminator']} "
+            out += f"[M] {thread['creator']['name']} "
             out += f"created a thread with [R] "
-            out += f"{thread['recipient']['name']}#{thread['recipient']['discriminator']} ({thread['recipient']['id']})\n"
+            out += f"{thread['recipient']['name']} ({thread['recipient']['id']})\n"
 
         out += "────────────────────────────────────────────────\n"
+
+        def get_visibility_label(message):
+            msg_type = (message.get("type") or "").lower()
+
+            if msg_type == "internal":
+                return "[INTERNAL]"
+            if msg_type == "note":
+                return "[NOTE]"
+            if msg_type in {"thread_message", "anonymous"}:
+                return "[SENT]"
+            return "[UNKNOWN]"
 
         if messages:
             for index, message in enumerate(messages):
@@ -43,8 +54,10 @@ class GenLog(commands.Cog):
                 user_type = "M" if author["mod"] else "R"
                 create_time = dateutil.parser.parse(message["timestamp"]).strftime("%d/%m %H:%M")
 
-                base = f"{create_time} {user_type} "
-                base += f"{author['name']}#{author['discriminator']}: {message['content']}\n"
+                visibility = get_visibility_label(message)
+
+                base = f"{create_time} {visibility} {user_type} "
+                base += f"{author['name']}: {message['content']}\n"
 
                 for attachment in message["attachments"]:
                     base += f"Attachment [{attachment['filename']}]: {attachment['url']}\n"
@@ -53,13 +66,12 @@ class GenLog(commands.Cog):
 
                 if curr != next_:
                     out += "────────────────────────────────\n"
-                    current_author = author
 
         if not thread["open"]:
-            if messages:  # only add if at least 1 message was sent
+            if messages:
                 out += "────────────────────────────────────────────────\n"
 
-            out += f"[M] {thread['closer']['name']}#{thread['closer']['discriminator']} ({thread['closer']['id']}) "
+            out += f"[M] {thread['closer']['name']} ({thread['closer']['id']}) "
             out += "closed the Modmail thread. \n"
 
             closed_time = dateutil.parser.parse(thread["closed_at"]).strftime("%d %b %Y - %H:%M UTC")
